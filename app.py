@@ -129,20 +129,20 @@ def cached_run(params_tuple):
 
 
 def main() -> None:
-    st.set_page_config(page_title="RIS 辅助毫米波覆盖仿真", layout="wide")
-    st.title("面向 5G-A/6G 的 RIS 智能反射面辅助毫米波覆盖增强仿真")
+    st.set_page_config(page_title="RIS辅助毫米波覆盖仿真", layout="wide")
+    st.title("面向5G-A/6G的RIS智能反射面辅助毫米波覆盖增强仿真")
     st.caption("左侧调节参数，右侧实时运行仿真并展示覆盖、干扰和链路结果。")
 
     with st.sidebar:
         st.header("仿真参数")
-        carrier = st.slider("载波频率 / GHz", 3.5, 60.0, 28.0, 0.5)
-        bandwidth = st.slider("系统带宽 / MHz", 50.0, 800.0, 400.0, 50.0)
-        power = st.slider("发射功率 / dBm", 20.0, 42.0, 30.0, 1.0)
-        elements = st.select_slider("RIS 单元数量", options=[16, 32, 64, 128, 256, 512, 1024], value=256)
-        blockage = st.slider("遮挡损耗 / dB", 8.0, 36.0, 24.0, 2.0)
-        ris_x = st.slider("RIS 横坐标 x / m", 60.0, 260.0, 135.0, 5.0)
-        ris_y = st.slider("RIS 纵坐标 y / m", 20.0, 240.0, 95.0, 5.0)
-        view = st.radio("结果视图", ["无 RIS RSRP", "优化 RIS RSRP", "RIS RSRP 增益", "优化 RIS SINR", "优化 RIS 吞吐率"])
+        carrier = st.slider("载波频率/GHz", 3.5, 60.0, 28.0, 0.5)
+        bandwidth = st.slider("系统带宽/MHz", 50.0, 800.0, 400.0, 50.0)
+        power = st.slider("发射功率/dBm", 20.0, 42.0, 30.0, 1.0)
+        elements = st.select_slider("RIS单元数量", options=[16, 32, 64, 128, 256, 512, 1024], value=256)
+        blockage = st.slider("遮挡损耗/dB", 8.0, 36.0, 24.0, 2.0)
+        ris_x = st.slider("RIS 横坐标x/m", 60.0, 260.0, 135.0, 5.0)
+        ris_y = st.slider("RIS 纵坐标y/m", 20.0, 240.0, 95.0, 5.0)
+        view = st.radio("结果视图", ["无RIS RSRP", "优化RIS RSRP", "RIS RSRP增益", "优化RIS SINR", "优化RIS吞吐率"])
 
     params = RisParams(
         carrier_ghz=carrier,
@@ -157,21 +157,21 @@ def main() -> None:
     data = run_scenarios(params)
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("无 RIS 覆盖率", f"{data['coverage_no'] * 100:.2f}%")
-    c2.metric("优化 RIS 覆盖率", f"{data['coverage_opt'] * 100:.2f}%", f"{(data['coverage_opt'] - data['coverage_no']) * 100:.2f} pct")
+    c1.metric("无RIS覆盖率", f"{data['coverage_no'] * 100:.2f}%")
+    c2.metric("优化RIS覆盖率", f"{data['coverage_opt'] * 100:.2f}%", f"{(data['coverage_opt'] - data['coverage_no']) * 100:.2f} pct")
     c3.metric("遮挡区平均速率", f"{data['blocked_mean_rate_opt']:.2f} Mbps")
     c4.metric("弱覆盖区平均增益", f"{data['weak_region_mean_gain']:.2f} dB")
 
-    if view == "无 RIS RSRP":
-        image = heatmap_image("无 RIS 场景 RSRP 覆盖热力图", data["x"], data["no_ris"], params, -125, -62, "dBm", PALETTE_RSRP)
-    elif view == "优化 RIS RSRP":
-        image = heatmap_image("优化相位 RIS 场景 RSRP 覆盖热力图", data["x"], data["with_opt"], params, -125, -62, "dBm", PALETTE_RSRP)
-    elif view == "RIS RSRP 增益":
-        image = heatmap_image("RIS 引入后的 RSRP 增益分布", data["x"], data["with_opt"] - data["no_ris"], params, 0, 28, "dB", PALETTE_GAIN)
-    elif view == "优化 RIS SINR":
-        image = heatmap_image("优化 RIS 场景 SINR 空间分布", data["x"], data["sinr_opt"], params, -10, 42, "dB", PALETTE_SINR)
+    if view == "无RIS RSRP":
+        image = heatmap_image("无RIS场景RSRP覆盖热力图", data["x"], data["no_ris"], params, -125, -62, "dBm", PALETTE_RSRP)
+    elif view == "优化RIS RSRP":
+        image = heatmap_image("优化相位RIS场景RSRP覆盖热力图", data["x"], data["with_opt"], params, -125, -62, "dBm", PALETTE_RSRP)
+    elif view == "RIS RSRP增益":
+        image = heatmap_image("RIS引入后的RSRP增益分布", data["x"], data["with_opt"] - data["no_ris"], params, 0, 28, "dB", PALETTE_GAIN)
+    elif view == "优化RIS SINR":
+        image = heatmap_image("优化RIS场景SINR空间分布", data["x"], data["sinr_opt"], params, -10, 42, "dB", PALETTE_SINR)
     else:
-        image = heatmap_image("优化 RIS 场景吞吐率空间分布", data["x"], data["throughput_opt"], params, 0, 4200, "Mbps", PALETTE_SINR)
+        image = heatmap_image("优化RIS场景吞吐率空间分布", data["x"], data["throughput_opt"], params, 0, 4200, "Mbps", PALETTE_SINR)
     st.image(image, use_container_width=True)
 
     st.subheader("典型用户链路质量")
@@ -181,10 +181,10 @@ def main() -> None:
     st.markdown(
         """
         1. 建立二维城区网格，并设置基站、RIS、建筑物遮挡和用户位置。  
-        2. 判断每个网格点的 BS-UE 与 RIS-UE 链路是否被遮挡。  
-        3. 用 Close-in 路径损耗模型计算直接链路和 RIS 级联反射链路。  
-        4. 在毫瓦域合并接收功率，加入同频干扰和热噪声，计算 SINR 与吞吐率。  
-        5. 对比无 RIS、随机相位 RIS 和优化相位 RIS 的覆盖增强效果。  
+        2. 判断每个网格点的BS-UE与RIS-UE链路是否被遮挡。  
+        3. 用Close-in路径损耗模型计算直接链路和RIS级联反射链路。  
+        4. 在毫瓦域合并接收功率，加入同频干扰和热噪声，计算SINR与吞吐率。  
+        5. 对比无 RIS、随机相位RIS和优化相位RIS的覆盖增强效果。  
         """
     )
 
