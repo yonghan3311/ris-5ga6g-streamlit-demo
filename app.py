@@ -140,8 +140,8 @@ def main() -> None:
         power = st.slider("发射功率/dBm", 20.0, 42.0, 30.0, 1.0)
         elements = st.select_slider("RIS单元数量", options=[16, 32, 64, 128, 256, 512, 1024], value=256)
         blockage = st.slider("遮挡损耗/dB", 8.0, 36.0, 24.0, 2.0)
-        ris_x = st.slider("RIS 横坐标x/m", 60.0, 260.0, 135.0, 5.0)
-        ris_y = st.slider("RIS 纵坐标y/m", 20.0, 240.0, 95.0, 5.0)
+        ris_x = st.slider("RIS横坐标x/m", 60.0, 260.0, 135.0, 5.0)
+        ris_y = st.slider("RIS纵坐标y/m", 20.0, 240.0, 95.0, 5.0)
         view = st.radio("结果视图", ["无RIS RSRP", "优化RIS RSRP", "RIS RSRP增益", "优化RIS SINR", "优化RIS吞吐率"])
 
     params = RisParams(
@@ -163,15 +163,15 @@ def main() -> None:
     c4.metric("弱覆盖区平均增益", f"{data['weak_region_mean_gain']:.2f} dB")
 
     if view == "无RIS RSRP":
-        image = heatmap_image("无RIS场景RSRP覆盖热力图", data["x"], data["no_ris"], params, -125, -62, "dBm", PALETTE_RSRP)
+        image = heatmap_image("No-RIS RSRP Heatmap", data["x"], data["no_ris"], params, -125, -62, "dBm", PALETTE_RSRP)
     elif view == "优化RIS RSRP":
-        image = heatmap_image("优化相位RIS场景RSRP覆盖热力图", data["x"], data["with_opt"], params, -125, -62, "dBm", PALETTE_RSRP)
+        image = heatmap_image("Optimized RIS RSRP Heatmap", data["x"], data["with_opt"], params, -125, -62, "dBm", PALETTE_RSRP)
     elif view == "RIS RSRP增益":
-        image = heatmap_image("RIS引入后的RSRP增益分布", data["x"], data["with_opt"] - data["no_ris"], params, 0, 28, "dB", PALETTE_GAIN)
+        image = heatmap_image("RSRP Gain with RIS", data["x"], data["with_opt"] - data["no_ris"], params, 0, 28, "dB", PALETTE_GAIN)
     elif view == "优化RIS SINR":
-        image = heatmap_image("优化RIS场景SINR空间分布", data["x"], data["sinr_opt"], params, -10, 42, "dB", PALETTE_SINR)
+        image = heatmap_image("Optimized RIS SINR Map", data["x"], data["sinr_opt"], params, -10, 42, "dB", PALETTE_SINR)
     else:
-        image = heatmap_image("优化RIS场景吞吐率空间分布", data["x"], data["throughput_opt"], params, 0, 4200, "Mbps", PALETTE_SINR)
+        image = heatmap_image("Optimized RIS Throughput Map", data["x"], data["throughput_opt"], params, 0, 4200, "Mbps", PALETTE_SINR)
     st.image(image, use_container_width=True)
 
     st.subheader("典型用户链路质量")
@@ -184,7 +184,7 @@ def main() -> None:
         2. 判断每个网格点的BS-UE与RIS-UE链路是否被遮挡。  
         3. 用Close-in路径损耗模型计算直接链路和RIS级联反射链路。  
         4. 在毫瓦域合并接收功率，加入同频干扰和热噪声，计算SINR与吞吐率。  
-        5. 对比无 RIS、随机相位RIS和优化相位RIS的覆盖增强效果。  
+        5. 对比无RIS、随机相位RIS和优化相位RIS的覆盖增强效果。  
         """
     )
 
